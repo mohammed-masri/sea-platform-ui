@@ -10,7 +10,7 @@ import {
   AccountSliceActions,
   selectAccounts,
   selectAccountsData,
-} from "@/store/slices/account/slice";
+} from "@/store/slices/account/account-slice";
 import clsx from "clsx";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";

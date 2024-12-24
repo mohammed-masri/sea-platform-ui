@@ -2,13 +2,14 @@
 import { Button, Input, RadioButton } from "sea-react-components";
 import { FormValidationUtils } from "@/utils";
 import { FormikHelpers, useFormik } from "formik";
-import React from "react";
-import { useAppDispatch } from "@/store/hooks";
+import React, { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { pushNewAlert } from "@/store/slices/alert/slice";
 import { useRouter } from "next/navigation";
 import { AccountTypes } from "@/dto/account";
 import AccountActionInstance from "@/store/slices/account/actions";
-import { AccountSliceActions } from "@/store/slices/account/slice";
+import { AccountSliceActions } from "@/store/slices/account/account-slice";
+import { selectAccountTypes } from "@/store/slices/account/account-type-slice";
 
 type Values = {
   name: string;
@@ -16,14 +17,14 @@ type Values = {
   phoneNumber: string;
   password: string;
   confirmPassword: string;
-  type: AccountTypes;
+  typeId: string;
   birthDate: string;
 };
 const initialValues: Values = {
   name: "",
   email: "",
   phoneNumber: "",
-  type: "User",
+  typeId: "",
   password: "",
   confirmPassword: "",
   birthDate: "",
@@ -32,14 +33,15 @@ const initialValues: Values = {
 export default function CreateAccountForm() {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const accountTypes = useAppSelector(selectAccountTypes);
 
   const onSubmit = (values: Values, formikHelpers: FormikHelpers<Values>) => {
-    const { name, birthDate, email, password, phoneNumber, type } = values;
+    const { name, birthDate, email, password, phoneNumber, typeId } = values;
     AccountActionInstance.createNewAccount(
       name,
       email,
       phoneNumber,
-      type,
+      typeId,
       password,
       birthDate
     )
@@ -73,6 +75,12 @@ export default function CreateAccountForm() {
     validationSchema: FormValidationUtils.Account.createNewAccountValidation,
     onSubmit,
   });
+
+  console.log("formik\n", formik.values);
+
+  useEffect(() => {
+    formik.setFieldValue("typeId", accountTypes[0].id || "");
+  }, [accountTypes]);
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -173,7 +181,18 @@ export default function CreateAccountForm() {
             <p>User Type</p>
 
             <div className="flex items-center gap-3 flex-wrap">
-              <RadioButton
+              {accountTypes.map((at) => (
+                <RadioButton
+                  key={`type-${at.id}`}
+                  checked={formik.values.typeId === at.id}
+                  id={at.id}
+                  name={at.id}
+                  onChange={() => formik.setFieldValue("typeId", at.id)}
+                  label={<p>{at.name}</p>}
+                />
+              ))}
+
+              {/* <RadioButton
                 checked={formik.values.type === "User"}
                 id="User"
                 name="User"
@@ -187,7 +206,7 @@ export default function CreateAccountForm() {
                 name="Admin"
                 onChange={() => formik.setFieldValue("type", "Admin")}
                 label={<p>Admin</p>}
-              />
+              /> */}
             </div>
           </div>
         </div>

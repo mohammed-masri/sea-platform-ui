@@ -5,6 +5,7 @@ export const APIs = {
     },
   },
   Account: {
+    getAccountTypes: "/accounts/types",
     create: "/accounts",
     update: (id: string) => `/accounts/${id}`,
     getAccountDetails: (id: string) => `/accounts/${id}`,

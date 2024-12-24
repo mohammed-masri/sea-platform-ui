@@ -8,9 +8,7 @@ export const createNewAccountValidation = () => {
 
     email: ValidationUtils.email as any,
     phoneNumber: ValidationUtils.phoneNumber as any,
-    type: Yup.mixed()
-      .oneOf(["Admin", "User"], "Type must be either Admin or User")
-      .required("Role is required"),
+    typeId: Yup.string().required("Type is required"),
     password: ValidationUtils.password as any,
     confirmPassword: ValidationUtils.confirmPassword as any,
     birthDate: Yup.date().optional(),

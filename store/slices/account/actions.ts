@@ -5,6 +5,7 @@ import {
   AccountTypes,
   IAccount,
   IAccountArrayDataResponse,
+  IAccountType,
 } from "@/dto/account";
 
 class AccountAction {
@@ -19,6 +20,12 @@ class AccountAction {
       AccountAction.instance = new AccountAction();
     }
     return AccountAction.instance;
+  }
+
+  getAccountTypes() {
+    return axiosInstance
+      .get(APIsConfig.APIs.Account.getAccountTypes)
+      .then((response) => response as unknown as IAccountType[]);
   }
 
   getAccounts(page: number = 1, limit: number = 10, query: string = "") {
@@ -37,7 +44,7 @@ class AccountAction {
     name: string,
     email: string,
     phoneNumber: string,
-    type: AccountTypes,
+    typeId: string,
     password: string,
     birthDate: string
   ) {
@@ -46,7 +53,7 @@ class AccountAction {
         name,
         email,
         phoneNumber,
-        type,
+        typeId,
         password,
         birthDate,
       })
