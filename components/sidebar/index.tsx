@@ -31,12 +31,19 @@ export default function Sidebar() {
               sidebar.mode === "full" ? "block" : "hidden"
             )}
           >
-            SEA Auth
+            SEA Platform
           </h1>
         </Link>
 
         <div className="flex flex-col gap-2">
           <SidebarItem label="Dashboard" icon="ion:home" link="/dashboard" />
+        </div>
+        <div className="flex flex-col gap-2">
+          <SidebarItem
+            label="Accounts"
+            icon="mdi:accounts-group"
+            link="/accounts"
+          />
         </div>
       </div>
 

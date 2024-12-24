@@ -1,7 +1,6 @@
-export enum AccountTypes {
-  User = "User",
-  Admin = "Admin",
-}
+import { IArrayDataResponse } from "../global";
+
+export type AccountTypes = "User" | "Admin";
 
 export interface IAccount {
   id: string;
@@ -9,5 +8,11 @@ export interface IAccount {
   email: string;
   phoneNumber: string;
   birthDate: string;
+  isLocked: boolean;
   type: AccountTypes;
+}
+
+export interface IAccountArrayDataResponse
+  extends IArrayDataResponse<IAccount> {
+  data: IAccount[];
 }
