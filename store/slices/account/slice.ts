@@ -11,7 +11,7 @@ interface State {
   data: AccountsPage;
   totalPages: number;
   query: string;
-  type: AccountTypes | "";
+  type: AccountTypes | "all";
 }
 
 const initialState: State = {
@@ -21,7 +21,7 @@ const initialState: State = {
   page: 1,
   limit: 10,
   query: "",
-  type: "",
+  type: "all",
 };
 
 const slice = createSlice({
@@ -63,7 +63,7 @@ const slice = createSlice({
     setQuery: (state, action: PayloadAction<string>) => {
       state.query = action.payload;
     },
-    setType: (state, action: PayloadAction<AccountTypes | "">) => {
+    setType: (state, action: PayloadAction<AccountTypes | "all">) => {
       state.type = action.payload;
     },
   },

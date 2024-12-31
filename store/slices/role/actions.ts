@@ -22,7 +22,7 @@ class RoleAction {
     page: number = 1,
     limit: number = 10,
     query: string = "",
-    type: AccountTypes | "" = ""
+    type: AccountTypes | "all" = "all"
   ) {
     return axiosInstance
       .get(APIsConfig.APIs.Role.getRoles(page, limit, query, type))

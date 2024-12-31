@@ -1,3 +1,4 @@
+import { AccountTypes } from "@/dto/account";
 import { IRoleShort } from "@/dto/role";
 import { RootState } from "@/store/store";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
@@ -11,6 +12,7 @@ interface State {
   data: RolesPage;
   totalPages: number;
   query: string;
+  type: AccountTypes | "all";
 }
 
 const initialState: State = {
@@ -20,6 +22,7 @@ const initialState: State = {
   page: 1,
   limit: 10,
   query: "",
+  type: "all",
 };
 
 const slice = createSlice({
@@ -55,6 +58,9 @@ const slice = createSlice({
     setQuery: (state, action: PayloadAction<string>) => {
       state.query = action.payload;
     },
+    setType: (state, action: PayloadAction<AccountTypes | "all">) => {
+      state.type = action.payload;
+    },
   },
 });
 
@@ -69,6 +75,7 @@ export const selectRolesData = (state: RootState) => ({
   query: state.role.query,
   totalCount: state.role.totalCount,
   totalPages: state.role.totalPages,
+  type: state.role.type,
 });
 
 const roleReducer = slice.reducer;

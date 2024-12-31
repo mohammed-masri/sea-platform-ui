@@ -25,7 +25,7 @@ class AccountAction {
     page: number = 1,
     limit: number = 10,
     query: string = "",
-    type: AccountTypes | "" = ""
+    type: AccountTypes | "all" = "all"
   ) {
     return axiosInstance
       .get(APIsConfig.APIs.Account.getAccounts(page, limit, query, type))

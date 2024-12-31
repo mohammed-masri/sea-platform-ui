@@ -14,7 +14,7 @@ export const APIs = {
       page: number = 1,
       limit: number = 10,
       query: string = "",
-      type: AccountTypes | "" = ""
+      type: AccountTypes | "all" = "all"
     ) => `/accounts?page=${page}&limit=${limit}&q=${query}&type=${type}`,
     changePassword: (id: string) => `/accounts/${id}/change-password`,
     toggleLock: (id: string) => `/accounts/${id}/toggle-lok`,
@@ -27,7 +27,7 @@ export const APIs = {
       page: number = 1,
       limit: number = 10,
       query: string = "",
-      type: AccountTypes | "" = ""
-    ) => `/accounts?page=${page}&limit=${limit}&q=${query}&accountType=${type}`,
+      type: AccountTypes | "all" = "all"
+    ) => `/roles?page=${page}&limit=${limit}&q=${query}&accountType=${type}`,
   },
 };

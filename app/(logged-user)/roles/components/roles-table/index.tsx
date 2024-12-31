@@ -1,17 +1,16 @@
 "use client";
-import AccountLookBadge from "@/components/account-lock-badge";
 import AccountTypeBadge from "@/components/account-type-badge";
-import { AccountTypes, IAccount } from "@/dto/account";
+import { AccountTypes } from "@/dto/account";
+import { IRoleShort } from "@/dto/role";
 import { useGetQueryParam } from "@/hooks/useGetQueryParam";
 import { useUpdateQueryParams } from "@/hooks/useUpdateQueryParams";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import AccountActionInstance from "@/store/slices/account/actions";
+import RoleActionInstance from "@/store/slices/role/actions";
 import {
-  AccountSliceActions,
-  selectAccounts,
-  selectAccountsData,
-} from "@/store/slices/account/slice";
-import clsx from "clsx";
+  RoleSliceActions,
+  selectRoles,
+  selectRolesData,
+} from "@/store/slices/role/slice";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import {
@@ -21,12 +20,12 @@ import {
   Paper,
   Table,
   TableColumn,
-  Drawer,
 } from "sea-react-components";
+import RoleDetailsDrawer from "../role-details-drawer";
 
 type ActionMenuProps = {
-  row: IAccount;
-  setSelectedRow: (row: IAccount) => void;
+  row: IRoleShort;
+  setSelectedRow: (row: IRoleShort) => void;
   setViewDrawerOpen: (open: boolean) => void;
 };
 const ActionMenu = ({
@@ -53,7 +52,7 @@ const ActionMenu = ({
               </div>
             </MenuItem>
             <MenuItem key="edit" className="p-2">
-              <Link href={`/accounts/${row.id}/update`}>
+              <Link href={`/roles/${row.id}/update`}>
                 <div className="flex items-center gap-1">
                   <Icon icon="tabler:edit" />
                   <p>Edit</p>
@@ -67,33 +66,18 @@ const ActionMenu = ({
   );
 };
 
-export default function AccountsTable() {
+export default function RolesTable() {
   const dispatch = useAppDispatch();
 
   const [viewDrawerOpen, setViewDrawerOpen] = useState(false);
-  const [selectedRow, setSelectedRow] = useState<IAccount | undefined>(
+  const [selectedRow, setSelectedRow] = useState<IRoleShort | undefined>(
     undefined
   );
 
-  const columns: TableColumn<IAccount>[] = [
+  const columns: TableColumn<IRoleShort>[] = [
     {
       key: "name",
       label: "Name",
-      // custom: (row)=>
-    },
-    {
-      key: "email",
-      label: "Email",
-      // custom: (row)=>
-    },
-    {
-      key: "phoneNumber",
-      label: "Phone Number",
-      // custom: (row)=>
-    },
-    {
-      key: "birthDate",
-      label: "Birthdate",
       // custom: (row)=>
     },
     {
@@ -102,13 +86,9 @@ export default function AccountsTable() {
       custom: (row) => <AccountTypeBadge type={row.type} />,
     },
     {
-      key: "isLocked",
-      label: "Locked",
-      custom: (row) => <AccountLookBadge isLocked={row.isLocked} />,
-    },
-    {
       key: "actions",
       label: "Actions",
+      className: "w-[10%]",
       custom: (row) => (
         <ActionMenu
           row={row}
@@ -120,35 +100,33 @@ export default function AccountsTable() {
   ];
 
   const { limit, page, query, totalPages, type } =
-    useAppSelector(selectAccountsData);
+    useAppSelector(selectRolesData);
   const {
     setLimit,
     setPage,
     setQuery,
     setTotalCount,
     setTotalPages,
-    setAccountsData,
+    setRolesData,
     setType,
-  } = AccountSliceActions;
-  const accounts = useAppSelector((state) => selectAccounts(state, page));
+  } = RoleSliceActions;
+  const roles = useAppSelector((state) => selectRoles(state, page));
 
   const updateParams = useUpdateQueryParams();
   const getParam = useGetQueryParam();
 
   useEffect(() => {
-    AccountActionInstance.getAccounts(page, limit, query, type).then(
-      (response) => {
-        const { data, page: p, totalCount: tc, totalPages: tp } = response;
-        dispatch(setTotalCount(tc));
-        dispatch(setTotalPages(tp));
-        dispatch(
-          setAccountsData({
-            accounts: data,
-            page: p,
-          })
-        );
-      }
-    );
+    RoleActionInstance.getRoles(page, limit, query, type).then((response) => {
+      const { data, page: p, totalCount: tc, totalPages: tp } = response;
+      dispatch(setTotalCount(tc));
+      dispatch(setTotalPages(tp));
+      dispatch(
+        setRolesData({
+          roles: data,
+          page: p,
+        })
+      );
+    });
   }, [
     page,
     query,
@@ -156,7 +134,7 @@ export default function AccountsTable() {
     dispatch,
     setTotalCount,
     setTotalPages,
-    setAccountsData,
+    setRolesData,
     type,
   ]);
 
@@ -165,9 +143,9 @@ export default function AccountsTable() {
       <Paper>
         <Table
           columns={columns}
-          rows={accounts}
-          title="Accounts Table"
-          name="accounts"
+          rows={roles}
+          title="Roles Table"
+          name="roles"
           page={page}
           setPage={(page) => dispatch(setPage(page))}
           totalPages={totalPages}
@@ -192,36 +170,11 @@ export default function AccountsTable() {
         />
       </Paper>
 
-      <Drawer isOpen={viewDrawerOpen} onClose={() => setViewDrawerOpen(false)}>
-        <div className="flex flex-col gap-5">
-          <h3 className="font-semibold text-black text-2xl">Account Details</h3>
-
-          <div className="flex flex-col gap-3">
-            <div className="flex gap-3 items-center">
-              <p className="text-xl text-secondary">{selectedRow?.name}</p>
-              <AccountTypeBadge type={selectedRow?.type || AccountTypes.User} />
-
-              <Icon
-                icon={selectedRow?.isLocked ? "si:lock-fill" : "si:unlock-fill"}
-                className={clsx(
-                  "w-5 h-6",
-                  selectedRow?.isLocked ? "text-warning" : "text-success"
-                )}
-              />
-            </div>
-
-            <div className="flex gap-1 items-center">
-              <p className="text-black">Email:</p>
-              <p className="text-text">{selectedRow?.email}</p>
-            </div>
-
-            <div className="flex gap-1 items-center">
-              <p className="text-black">Phone Number:</p>
-              <p className="text-text">{selectedRow?.phoneNumber}</p>
-            </div>
-          </div>
-        </div>
-      </Drawer>
+      <RoleDetailsDrawer
+        isOpen={viewDrawerOpen}
+        onClose={() => setViewDrawerOpen(false)}
+        roleId={selectedRow?.id}
+      />
     </>
   );
 }

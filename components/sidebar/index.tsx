@@ -45,6 +45,9 @@ export default function Sidebar() {
             link="/accounts"
           />
         </div>
+        <div className="flex flex-col gap-2">
+          <SidebarItem label="Roles" icon="carbon:user-role" link="/roles" />
+        </div>
       </div>
 
       <Image
