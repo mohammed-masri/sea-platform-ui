@@ -19,4 +19,15 @@ export const APIs = {
     changePassword: (id: string) => `/accounts/${id}/change-password`,
     toggleLock: (id: string) => `/accounts/${id}/toggle-lok`,
   },
+  Role: {
+    create: "/roles",
+    update: (id: string) => `/roles/${id}`,
+    getRoleDetails: (id: string) => `/roles/${id}`,
+    getRoles: (
+      page: number = 1,
+      limit: number = 10,
+      query: string = "",
+      type: AccountTypes | "" = ""
+    ) => `/accounts?page=${page}&limit=${limit}&q=${query}&accountType=${type}`,
+  },
 };

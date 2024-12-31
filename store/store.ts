@@ -14,6 +14,7 @@ import layoutReducer from "./slices/layout/slice";
 import alertReducer from "./slices/alert/slice";
 import authReducer from "./slices/auth/slice";
 import accountReducer from "./slices/account/slice";
+import roleReducer from "./slices/role/slice";
 
 const persistConfig = {
   key: "root",
@@ -25,6 +26,7 @@ const rootReducer = combineReducers({
   alert: alertReducer,
   auth: authReducer,
   account: accountReducer,
+  role: roleReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
