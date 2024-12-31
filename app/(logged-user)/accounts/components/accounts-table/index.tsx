@@ -1,7 +1,7 @@
 "use client";
 import AccountLookBadge from "@/components/account-lock-badge";
 import AccountTypeBadge from "@/components/account-type-badge";
-import { IAccount } from "@/dto/account";
+import { AccountTypes, IAccount } from "@/dto/account";
 import { useGetQueryParam } from "@/hooks/useGetQueryParam";
 import { useUpdateQueryParams } from "@/hooks/useUpdateQueryParams";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -10,7 +10,7 @@ import {
   AccountSliceActions,
   selectAccounts,
   selectAccountsData,
-} from "@/store/slices/account/account-slice";
+} from "@/store/slices/account/slice";
 import clsx from "clsx";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -119,7 +119,8 @@ export default function AccountsTable() {
     },
   ];
 
-  const { limit, page, query, totalPages } = useAppSelector(selectAccountsData);
+  const { limit, page, query, totalPages, type } =
+    useAppSelector(selectAccountsData);
   const {
     setLimit,
     setPage,
@@ -127,6 +128,7 @@ export default function AccountsTable() {
     setTotalCount,
     setTotalPages,
     setAccountsData,
+    setType,
   } = AccountSliceActions;
   const accounts = useAppSelector((state) => selectAccounts(state, page));
 
@@ -134,18 +136,20 @@ export default function AccountsTable() {
   const getParam = useGetQueryParam();
 
   useEffect(() => {
-    AccountActionInstance.getAccounts(page, limit, query).then((response) => {
-      console.log(response);
-      const { data, page: p, totalCount: tc, totalPages: tp } = response;
-      dispatch(setTotalCount(tc));
-      dispatch(setTotalPages(tp));
-      dispatch(
-        setAccountsData({
-          accounts: data,
-          page: p,
-        })
-      );
-    });
+    AccountActionInstance.getAccounts(page, limit, query, type).then(
+      (response) => {
+        console.log(response);
+        const { data, page: p, totalCount: tc, totalPages: tp } = response;
+        dispatch(setTotalCount(tc));
+        dispatch(setTotalPages(tp));
+        dispatch(
+          setAccountsData({
+            accounts: data,
+            page: p,
+          })
+        );
+      }
+    );
   }, [
     page,
     query,
@@ -154,6 +158,7 @@ export default function AccountsTable() {
     setTotalCount,
     setTotalPages,
     setAccountsData,
+    type,
   ]);
 
   return (
@@ -171,7 +176,18 @@ export default function AccountsTable() {
           setRowsPerPage={(limit) => dispatch(setLimit(limit))}
           query={query}
           setQuery={(query) => dispatch(setQuery(query))}
-          filters={[]}
+          filters={[
+            {
+              label: "Type",
+              name: "type",
+              options: Object.values(AccountTypes).map((value) => ({
+                label: value,
+                value,
+              })),
+              value: type,
+              setValue: (newValue) => dispatch(setType(newValue)),
+            },
+          ]}
           updateParams={updateParams}
           getParam={getParam}
         />
@@ -184,7 +200,7 @@ export default function AccountsTable() {
           <div className="flex flex-col gap-3">
             <div className="flex gap-3 items-center">
               <p className="text-xl text-secondary">{selectedRow?.name}</p>
-              <AccountTypeBadge type={selectedRow?.type || "User"} />
+              <AccountTypeBadge type={selectedRow?.type || AccountTypes.User} />
 
               <Icon
                 icon={selectedRow?.isLocked ? "si:lock-fill" : "si:unlock-fill"}

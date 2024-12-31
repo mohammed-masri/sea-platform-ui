@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as Yup from "yup";
 import { ValidationUtils } from "sea-react-components";
+import { AccountTypes } from "@/dto/account";
 
 export const createNewAccountValidation = () => {
   return Yup.object({
@@ -8,7 +9,9 @@ export const createNewAccountValidation = () => {
 
     email: ValidationUtils.email as any,
     phoneNumber: ValidationUtils.phoneNumber as any,
-    typeId: Yup.string().required("Type is required"),
+    type: Yup.mixed()
+      .oneOf(Object.values(AccountTypes), "Type must be either Admin or User")
+      .required("Role is required"),
     password: ValidationUtils.password as any,
     confirmPassword: ValidationUtils.confirmPassword as any,
     birthDate: Yup.date().optional(),

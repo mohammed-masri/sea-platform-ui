@@ -1,4 +1,4 @@
-import { IAccount } from "@/dto/account";
+import { AccountTypes, IAccount } from "@/dto/account";
 import { RootState } from "@/store/store";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
@@ -11,6 +11,7 @@ interface State {
   data: AccountsPage;
   totalPages: number;
   query: string;
+  type: AccountTypes | "";
 }
 
 const initialState: State = {
@@ -20,6 +21,7 @@ const initialState: State = {
   page: 1,
   limit: 10,
   query: "",
+  type: "",
 };
 
 const slice = createSlice({
@@ -61,6 +63,9 @@ const slice = createSlice({
     setQuery: (state, action: PayloadAction<string>) => {
       state.query = action.payload;
     },
+    setType: (state, action: PayloadAction<AccountTypes | "">) => {
+      state.type = action.payload;
+    },
   },
 });
 
@@ -75,6 +80,7 @@ export const selectAccountsData = (state: RootState) => ({
   query: state.account.query,
   totalCount: state.account.totalCount,
   totalPages: state.account.totalPages,
+  type: state.account.type,
 });
 
 const accountReducer = slice.reducer;

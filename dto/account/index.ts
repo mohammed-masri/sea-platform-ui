@@ -1,11 +1,8 @@
 import { IArrayDataResponse } from "../global";
 
-export type AccountTypes = "User" | "Admin";
-
-export interface IAccountType {
-  id: string;
-  name: string;
-  key: AccountTypes;
+export enum AccountTypes {
+  User = "User",
+  Admin = "Admin",
 }
 
 export interface IAccount {
