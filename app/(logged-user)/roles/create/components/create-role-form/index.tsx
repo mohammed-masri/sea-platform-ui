@@ -1,6 +1,7 @@
 "use client";
 import {
   Button,
+  ColorPicker,
   Input,
   RadioButton,
   Textarea,
@@ -23,12 +24,14 @@ type Values = {
   name: string;
   description: string;
   permissionKeys: PermissionKeys[];
+  color: string;
   type: AccountTypes;
 };
 const initialValues: Values = {
   name: "",
   description: "",
   permissionKeys: [],
+  color: "#000000",
   type: AccountTypes.User,
 };
 
@@ -41,8 +44,14 @@ export default function CreateRoleForm() {
   );
 
   const onSubmit = (values: Values, formikHelpers: FormikHelpers<Values>) => {
-    const { name, description, permissionKeys, type } = values;
-    RoleActionInstance.createNewRole(name, description, permissionKeys, type)
+    const { name, description, permissionKeys, type, color } = values;
+    RoleActionInstance.createNewRole(
+      name,
+      description,
+      permissionKeys,
+      type,
+      color
+    )
       .then(() => {
         router.push("/roles");
         dispatch(
@@ -112,7 +121,7 @@ export default function CreateRoleForm() {
   return (
     <form onSubmit={formik.handleSubmit}>
       <div className="flex flex-col gap-10">
-        <div className="grid grid-cols-4 gap-5 items-center">
+        <div className="grid grid-cols-4 gap-5 items-start">
           <div className="col-span-4 md:col-span-2">
             <div className="flex flex-col gap-1">
               <label>Name</label>
@@ -124,6 +133,18 @@ export default function CreateRoleForm() {
                 onBlur={formik.handleBlur}
                 value={formik.values.name}
                 errorMessage={formik.errors.name}
+              />
+            </div>
+          </div>
+
+          <div className="col-span-4 md:col-span-2">
+            <div className="flex flex-col gap-1">
+              <label>Color</label>
+              <ColorPicker
+                id="color"
+                name="color"
+                color={formik.values.color}
+                setColor={(newColor) => formik.setFieldValue("color", newColor)}
               />
             </div>
           </div>

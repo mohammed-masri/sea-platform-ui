@@ -40,7 +40,8 @@ class RoleAction {
     name: string,
     description: string,
     permissionKeys: PermissionKeys[],
-    type: AccountTypes
+    type: AccountTypes,
+    color: string
   ) {
     return axiosInstance
       .post(APIsConfig.APIs.Role.create, {
@@ -48,6 +49,7 @@ class RoleAction {
         description,
         permissionKeys,
         type,
+        color,
       })
       .then((response) => response as unknown as IRoleFull);
   }
@@ -56,13 +58,15 @@ class RoleAction {
     id: string,
     name: string,
     description: string,
-    permissionKeys: PermissionKeys[]
+    permissionKeys: PermissionKeys[],
+    color: string
   ) {
     return axiosInstance
       .put(APIsConfig.APIs.Role.update(id), {
         name,
         description,
         permissionKeys,
+        color,
       })
       .then((response) => response as unknown as IRoleFull);
   }

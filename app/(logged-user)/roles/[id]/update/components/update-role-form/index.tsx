@@ -1,6 +1,7 @@
 "use client";
 import {
   Button,
+  ColorPicker,
   Textarea,
   TreeCheckbox,
   TreeCheckboxUtils,
@@ -23,6 +24,7 @@ type Values = {
   description: string;
   permissionKeys: PermissionKeys[];
   type: AccountTypes;
+  color: string;
 };
 
 const initialValues: Values = {
@@ -30,6 +32,7 @@ const initialValues: Values = {
   description: "",
   permissionKeys: [],
   type: AccountTypes.User,
+  color: "",
 };
 
 export default function UpdateRoleForm() {
@@ -42,12 +45,13 @@ export default function UpdateRoleForm() {
   >([]);
 
   const onSubmit = (values: Values, formikHelpers: FormikHelpers<Values>) => {
-    const { name, description, permissionKeys } = values;
+    const { name, description, permissionKeys, color } = values;
     RoleActionInstance.updateRoleDetails(
       params.id,
       name,
       description,
-      permissionKeys
+      permissionKeys,
+      color
     )
       .then(() => {
         router.push("/roles");
@@ -86,6 +90,7 @@ export default function UpdateRoleForm() {
         description: response.description,
         type: response?.type,
         permissionKeys: [],
+        color: response.color,
         // permissionKeys: response.permissions
       });
 
@@ -122,6 +127,18 @@ export default function UpdateRoleForm() {
                 onBlur={formik.handleBlur}
                 value={formik.values.name}
                 errorMessage={formik.errors.name}
+              />
+            </div>
+          </div>
+
+          <div className="col-span-4 md:col-span-2">
+            <div className="flex flex-col gap-1">
+              <label>Color</label>
+              <ColorPicker
+                id="color"
+                name="color"
+                color={formik.values.color}
+                setColor={(newColor) => formik.setFieldValue("color", newColor)}
               />
             </div>
           </div>

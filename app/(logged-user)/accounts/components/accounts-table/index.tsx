@@ -1,5 +1,6 @@
 "use client";
 import AccountLookBadge from "@/components/account-lock-badge";
+import AccountRoleBadge from "@/components/account-role-badge";
 import AccountTypeBadge from "@/components/account-type-badge";
 import { AccountTypes, IAccount } from "@/dto/account";
 import { useGetQueryParam } from "@/hooks/useGetQueryParam";
@@ -100,6 +101,18 @@ export default function AccountsTable() {
       key: "type",
       label: "Type",
       custom: (row) => <AccountTypeBadge type={row.type} />,
+    },
+    {
+      key: "roles",
+      label: "Roles",
+      custom: (row) => (
+        <div className="flex gap-2 items-center">
+          {row.roles.map((r) => (
+            <AccountRoleBadge key={`role-${r.id}`} role={r} />
+          ))}
+        </div>
+      ),
+      className: "w-[50%]",
     },
     {
       key: "isLocked",
@@ -218,6 +231,14 @@ export default function AccountsTable() {
             <div className="flex gap-1 items-center">
               <p className="text-black">Phone Number:</p>
               <p className="text-text">{selectedRow?.phoneNumber}</p>
+            </div>
+            <div className="flex flex-col gap-1">
+              <p className="text-black">Roles:</p>
+              <div className="flex gap-2 items-center">
+                {selectedRow?.roles.map((r) => (
+                  <AccountRoleBadge key={`role-${r.id}`} role={r} />
+                ))}
+              </div>
             </div>
           </div>
         </div>

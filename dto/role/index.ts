@@ -14,6 +14,7 @@ export interface IRoleShort {
   name: string;
   description: string;
   type: AccountTypes;
+  color: string;
 }
 
 export interface IRoleArrayDataResponse extends IArrayDataResponse<IRoleShort> {
