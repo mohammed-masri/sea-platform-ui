@@ -2,6 +2,7 @@ import { AccountTypes } from "@/dto/account";
 import { IRoleShort } from "@/dto/role";
 import { RootState } from "@/store/store";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { ArrayUtils } from "sea-react-components";
 
 type RolesPage = Record<number, IRoleShort[]>;
 
@@ -89,6 +90,22 @@ export const RoleSliceActions = slice.actions;
 
 export const selectRoles = (state: RootState, page: number) =>
   state.role.data[page] ? state.role.data[page] : [];
+export const selectAllRoles = (state: RootState) => {
+  let roles: IRoleShort[] = [];
+
+  Object.keys(state.role.data).forEach((page) => {
+    const p = Number(page);
+    if (state.role.data[p]) {
+      roles = ArrayUtils.concatWithoutDuplicates(
+        roles,
+        state.role.data[p],
+        (a, b) => a.id === b.id
+      );
+    }
+  });
+
+  return roles;
+};
 
 export const selectRolesData = (state: RootState) => ({
   limit: state.role.limit,

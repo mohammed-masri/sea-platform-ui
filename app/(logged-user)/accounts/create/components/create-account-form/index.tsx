@@ -2,13 +2,15 @@
 import { Button, Input, RadioButton, Select } from "sea-react-components";
 import { FormValidationUtils } from "@/utils";
 import { FormikHelpers, useFormik } from "formik";
-import React from "react";
-import { useAppDispatch } from "@/store/hooks";
+import React, { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { pushNewAlert } from "@/store/slices/alert/slice";
 import { useRouter } from "next/navigation";
 import AccountActionInstance from "@/store/slices/account/actions";
 import { AccountSliceActions } from "@/store/slices/account/slice";
 import { AccountTypes } from "@/dto/account";
+import RoleActionInstance from "@/store/slices/role/actions";
+import { RoleSliceActions, selectAllRoles } from "@/store/slices/role/slice";
 
 type Values = {
   name: string;
@@ -28,7 +30,7 @@ const initialValues: Values = {
   password: "",
   confirmPassword: "",
   birthDate: "",
-  roleIds: ["1"],
+  roleIds: [],
 };
 
 export default function CreateAccountForm() {
@@ -36,14 +38,16 @@ export default function CreateAccountForm() {
   const dispatch = useAppDispatch();
 
   const onSubmit = (values: Values, formikHelpers: FormikHelpers<Values>) => {
-    const { name, birthDate, email, password, phoneNumber, type } = values;
+    const { name, birthDate, email, password, phoneNumber, type, roleIds } =
+      values;
     AccountActionInstance.createNewAccount(
       name,
       email,
       phoneNumber,
       type,
       password,
-      birthDate
+      birthDate,
+      roleIds
     )
       .then((response) => {
         dispatch(AccountSliceActions.pushNewAccount(response));
@@ -75,6 +79,35 @@ export default function CreateAccountForm() {
     validationSchema: FormValidationUtils.Account.createNewAccountValidation,
     onSubmit,
   });
+
+  const roles = useAppSelector(selectAllRoles);
+
+  const { setTotalCount, setTotalPages, setRolesData } = RoleSliceActions;
+
+  useEffect(() => {
+    RoleActionInstance.getRoles(
+      1,
+      1000, // TODO: fix hardcoded limit
+      "",
+      formik.values.type
+    ).then((response) => {
+      const { data, page: p, totalCount: tc, totalPages: tp } = response;
+      dispatch(setTotalCount(tc));
+      dispatch(setTotalPages(tp));
+      dispatch(
+        setRolesData({
+          roles: data,
+          page: p,
+        })
+      );
+    });
+  }, [
+    dispatch,
+    setTotalCount,
+    setTotalPages,
+    setRolesData,
+    formik.values.type,
+  ]);
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -190,22 +223,23 @@ export default function CreateAccountForm() {
           </div>
 
           <div className="col-span-2 md:col-span-1">
-            <div className="flex items-center gap-3 md:gap-10 flex-wrap">
-              <p>Roles</p>
+            <div className="flex items-center gap-3 flex-wrap">
+              <div>
+                <p>Roles</p>
+
+                {formik.errors.roleIds && (
+                  <p className="text-sm text-error">{formik.errors.roleIds}</p>
+                )}
+              </div>
+
               <div className="flex items-center gap-3 flex-wrap">
                 <Select
                   multiselect
                   name="role"
-                  options={[
-                    {
-                      label: "Role 1",
-                      value: "1",
-                    },
-                    {
-                      label: "Role 2",
-                      value: "2",
-                    },
-                  ]}
+                  options={roles.map((r) => ({
+                    label: r.name,
+                    value: r.id,
+                  }))}
                   setValues={(newValues) =>
                     formik.setFieldValue("roleIds", newValues)
                   }

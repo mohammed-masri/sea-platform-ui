@@ -1,19 +1,24 @@
 "use client";
-import { Button } from "sea-react-components";
+import { Button, Select } from "sea-react-components";
 import { Input } from "sea-react-components";
 import { FormValidationUtils } from "@/utils";
 import { FormikHelpers, useFormik } from "formik";
 import React, { useEffect } from "react";
 import { useParams } from "next/navigation";
 import AccountActionInstance from "@/store/slices/account/actions";
-import { useAppDispatch } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { pushNewAlert } from "@/store/slices/alert/slice";
+import RoleActionInstance from "@/store/slices/role/actions";
+import { RoleSliceActions, selectAllRoles } from "@/store/slices/role/slice";
+import { AccountTypes } from "@/dto/account";
 
 type Values = {
   name: string;
   email: string;
   phoneNumber: string;
   birthDate: string;
+  type: AccountTypes;
+  roleIds: string[];
 };
 
 const initialValues: Values = {
@@ -21,6 +26,8 @@ const initialValues: Values = {
   email: "",
   phoneNumber: "",
   birthDate: "",
+  type: AccountTypes.User,
+  roleIds: [],
 };
 
 export default function UpdateAccountForm() {
@@ -28,14 +35,15 @@ export default function UpdateAccountForm() {
   const dispatch = useAppDispatch();
 
   const onSubmit = (values: Values, formikHelpers: FormikHelpers<Values>) => {
-    const { name, birthDate, email, phoneNumber } = values;
+    const { name, birthDate, email, phoneNumber, roleIds } = values;
 
     AccountActionInstance.updateAccountDetails(
       params.id,
       name,
       email,
       phoneNumber,
-      birthDate
+      birthDate,
+      roleIds
     )
       .then(() => {
         dispatch(
@@ -73,10 +81,41 @@ export default function UpdateAccountForm() {
         email: response?.email || "",
         phoneNumber: response?.phoneNumber || "",
         birthDate: response?.birthDate || "",
+        type: response?.type || AccountTypes.User,
+        roleIds: response?.roles.map((r) => r.id),
       });
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id]);
+
+  const roles = useAppSelector(selectAllRoles);
+
+  const { setTotalCount, setTotalPages, setRolesData } = RoleSliceActions;
+
+  useEffect(() => {
+    RoleActionInstance.getRoles(
+      1,
+      1000, // TODO: fix hardcoded limit
+      "",
+      formik.values.type
+    ).then((response) => {
+      const { data, page: p, totalCount: tc, totalPages: tp } = response;
+      dispatch(setTotalCount(tc));
+      dispatch(setTotalPages(tp));
+      dispatch(
+        setRolesData({
+          roles: data,
+          page: p,
+        })
+      );
+    });
+  }, [
+    dispatch,
+    setTotalCount,
+    setTotalPages,
+    setRolesData,
+    formik.values.type,
+  ]);
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -127,7 +166,6 @@ export default function UpdateAccountForm() {
             </div>
           </div>
           <div className="col-span-2 md:col-span-1">
-            {" "}
             <div className="flex flex-col gap-1">
               <label>Phone Number</label>
               <Input
@@ -139,6 +177,33 @@ export default function UpdateAccountForm() {
                 value={formik.values.phoneNumber}
                 errorMessage={formik.errors.phoneNumber}
               />
+            </div>
+          </div>
+
+          <div className="col-span-2">
+            <div className="flex items-center gap-3 flex-wrap">
+              <div>
+                <p>Roles</p>
+
+                {formik.errors.roleIds && (
+                  <p className="text-sm text-error">{formik.errors.roleIds}</p>
+                )}
+              </div>
+
+              <div className="flex items-center gap-3 flex-wrap">
+                <Select
+                  multiselect
+                  name="role"
+                  options={roles.map((r) => ({
+                    label: r.name,
+                    value: r.id,
+                  }))}
+                  setValues={(newValues) =>
+                    formik.setFieldValue("roleIds", newValues)
+                  }
+                  values={formik.values.roleIds}
+                />
+              </div>
             </div>
           </div>
         </div>

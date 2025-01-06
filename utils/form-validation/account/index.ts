@@ -15,6 +15,9 @@ export const createNewAccountValidation = () => {
     password: ValidationUtils.password as any,
     confirmPassword: ValidationUtils.confirmPassword as any,
     birthDate: Yup.date().optional(),
+    roleIds: Yup.array()
+      .required("Roles are required")
+      .min(1, "At least one role is required"),
   });
 };
 
@@ -24,6 +27,9 @@ export const updateAccountValidation = () => {
     email: ValidationUtils.email as any,
     phoneNumber: ValidationUtils.phoneNumber as any,
     birthDate: Yup.date().optional(),
+    roleIds: Yup.array()
+      .required("Roles are required")
+      .min(1, "At least one role is required"),
   });
 };
 

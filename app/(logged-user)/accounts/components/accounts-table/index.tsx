@@ -103,18 +103,6 @@ export default function AccountsTable() {
       custom: (row) => <AccountTypeBadge type={row.type} />,
     },
     {
-      key: "roles",
-      label: "Roles",
-      custom: (row) => (
-        <div className="flex gap-2 items-center">
-          {row.roles.map((r) => (
-            <AccountRoleBadge key={`role-${r.id}`} role={r} />
-          ))}
-        </div>
-      ),
-      className: "w-[50%]",
-    },
-    {
       key: "isLocked",
       label: "Locked",
       custom: (row) => <AccountLookBadge isLocked={row.isLocked} />,
@@ -122,6 +110,7 @@ export default function AccountsTable() {
     {
       key: "actions",
       label: "Actions",
+      className: "w-[10%]",
       custom: (row) => (
         <ActionMenu
           row={row}

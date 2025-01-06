@@ -44,7 +44,8 @@ class AccountAction {
     phoneNumber: string,
     type: AccountTypes,
     password: string,
-    birthDate: string
+    birthDate: string,
+    roleIds: string[]
   ) {
     return axiosInstance
       .post(APIsConfig.APIs.Account.create, {
@@ -54,6 +55,7 @@ class AccountAction {
         type,
         password,
         birthDate,
+        roleIds,
       })
       .then((response) => response as unknown as IAccount);
   }
@@ -63,7 +65,8 @@ class AccountAction {
     name: string,
     email: string,
     phoneNumber: string,
-    birthDate: string
+    birthDate: string,
+    roleIds: string[]
   ) {
     return axiosInstance
       .put(APIsConfig.APIs.Account.update(id), {
@@ -71,6 +74,7 @@ class AccountAction {
         email,
         phoneNumber,
         birthDate,
+        roleIds,
       })
       .then((response) => response as unknown as IAccount);
   }
