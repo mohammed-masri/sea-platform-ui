@@ -14,24 +14,29 @@ import {
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import {
+  Button,
   Icon,
   Menu,
   MenuItem,
+  Modal,
   Paper,
   Table,
   TableColumn,
 } from "sea-react-components";
 import RoleDetailsDrawer from "../role-details-drawer";
+import { pushNewAlert } from "@/store/slices/alert/slice";
 
 type ActionMenuProps = {
   row: IRoleShort;
   setSelectedRow: (row: IRoleShort) => void;
   setViewDrawerOpen: (open: boolean) => void;
+  setDeleteModelOpen: (open: boolean) => void;
 };
 const ActionMenu = ({
   row,
   setSelectedRow,
   setViewDrawerOpen,
+  setDeleteModelOpen,
 }: ActionMenuProps) => {
   return (
     <>
@@ -59,6 +64,19 @@ const ActionMenu = ({
                 </div>
               </Link>
             </MenuItem>
+            <MenuItem
+              key="delete"
+              className="p-2"
+              onClick={() => {
+                setSelectedRow(row);
+                setDeleteModelOpen(true);
+              }}
+            >
+              <div className="flex items-center gap-1">
+                <Icon icon="material-symbols:delete" />
+                <p>Delete</p>
+              </div>
+            </MenuItem>
           </div>
         </Menu>
       </div>
@@ -70,6 +88,7 @@ export default function RolesTable() {
   const dispatch = useAppDispatch();
 
   const [viewDrawerOpen, setViewDrawerOpen] = useState(false);
+  const [deleteModelOpen, setDeleteModelOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState<IRoleShort | undefined>(
     undefined
   );
@@ -94,6 +113,7 @@ export default function RolesTable() {
           row={row}
           setSelectedRow={setSelectedRow}
           setViewDrawerOpen={setViewDrawerOpen}
+          setDeleteModelOpen={setDeleteModelOpen}
         />
       ),
     },
@@ -138,6 +158,40 @@ export default function RolesTable() {
     type,
   ]);
 
+  const handleDeleteRole = () => {
+    if (selectedRow) {
+      RoleActionInstance.deleteRole(selectedRow.id)
+        .then((response) => {
+          console.log(response);
+          dispatch(
+            pushNewAlert({
+              message: "The role has been deleted successfully",
+              theme: "light",
+              type: "success",
+            })
+          );
+          dispatch(
+            RoleSliceActions.removeRole({
+              id: selectedRow.id,
+              page,
+            })
+          );
+        })
+        .catch((error) => {
+          dispatch(
+            pushNewAlert({
+              message: error.message,
+              theme: "light",
+              type: "error",
+            })
+          );
+        })
+        .finally(() => {
+          setDeleteModelOpen(false);
+        });
+    }
+  };
+
   return (
     <>
       <Paper>
@@ -170,11 +224,34 @@ export default function RolesTable() {
         />
       </Paper>
 
-      <RoleDetailsDrawer
-        isOpen={viewDrawerOpen}
-        onClose={() => setViewDrawerOpen(false)}
-        roleId={selectedRow?.id}
-      />
+      {selectedRow && viewDrawerOpen && (
+        <RoleDetailsDrawer
+          isOpen={viewDrawerOpen}
+          onClose={() => setViewDrawerOpen(false)}
+          roleId={selectedRow.id}
+        />
+      )}
+
+      {selectedRow && deleteModelOpen && (
+        <Modal
+          isOpen={deleteModelOpen}
+          onClose={() => setDeleteModelOpen(false)}
+          className="flex flex-col gap-5"
+        >
+          <p>Do you want to delete this role?</p>
+          <div className="flex items-center justify-end gap-3">
+            <Button
+              className="bg-transparent"
+              onClick={() => setDeleteModelOpen(false)}
+            >
+              <p className="text-error hover:text-opacity-50 custom-animation">
+                Dismiss
+              </p>
+            </Button>
+            <Button onClick={() => handleDeleteRole()}>Confirm</Button>
+          </div>
+        </Modal>
+      )}
     </>
   );
 }

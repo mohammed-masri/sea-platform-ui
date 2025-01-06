@@ -1,6 +1,7 @@
 "use client";
 import AccountTypeBadge from "@/components/account-type-badge";
 import { AccountTypes } from "@/dto/account";
+import { PermissionKeys } from "@/dto/permission";
 import { IRoleFull, IRolePermission } from "@/dto/role";
 import RoleActionInstance from "@/store/slices/role/actions";
 import clsx from "clsx";
@@ -70,7 +71,7 @@ export default function RoleDetailsDrawer({
       });
   }, [roleId]);
 
-  let nodes: TreeCheckboxNode[] = [];
+  let nodes: TreeCheckboxNode<PermissionKeys>[] = [];
   if (role?.permissions) {
     nodes = role.permissions.map((p) =>
       TreeCheckboxUtils.makeTreeNode<IRolePermission>(p, {
@@ -82,11 +83,6 @@ export default function RoleDetailsDrawer({
       })
     );
   }
-
-  const handleChange = (allChecked: string[], leafChecked: string[]) => {
-    console.log("All Checked:", allChecked);
-    console.log("Leaf Checked:", leafChecked);
-  };
 
   return (
     <Drawer isOpen={isOpen} onClose={onClose}>
@@ -110,7 +106,8 @@ export default function RoleDetailsDrawer({
               <TreeCheckbox
                 name={`permissions-${role?.id}}`}
                 nodes={nodes}
-                onChange={handleChange}
+                onChange={() => {}}
+                readonly
               />
             </div>
           </div>

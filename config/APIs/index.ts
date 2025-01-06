@@ -29,5 +29,9 @@ export const APIs = {
       query: string = "",
       type: AccountTypes | "all" = "all"
     ) => `/roles?page=${page}&limit=${limit}&q=${query}&accountType=${type}`,
+    delete: (id: string) => `/roles/${id}`,
+  },
+  StaticData: {
+    permissions: `/static/permissions`,
   },
 };

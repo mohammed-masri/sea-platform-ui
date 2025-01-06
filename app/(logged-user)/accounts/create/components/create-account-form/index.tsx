@@ -1,5 +1,5 @@
 "use client";
-import { Button, Input, RadioButton } from "sea-react-components";
+import { Button, Input, RadioButton, Select } from "sea-react-components";
 import { FormValidationUtils } from "@/utils";
 import { FormikHelpers, useFormik } from "formik";
 import React from "react";
@@ -18,6 +18,7 @@ type Values = {
   confirmPassword: string;
   type: AccountTypes;
   birthDate: string;
+  roleIds: string[];
 };
 const initialValues: Values = {
   name: "",
@@ -27,6 +28,7 @@ const initialValues: Values = {
   password: "",
   confirmPassword: "",
   birthDate: "",
+  roleIds: ["1"],
 };
 
 export default function CreateAccountForm() {
@@ -74,12 +76,10 @@ export default function CreateAccountForm() {
     onSubmit,
   });
 
-  console.log("formik\n", formik.values);
-
   return (
     <form onSubmit={formik.handleSubmit}>
       <div className="flex flex-col gap-10">
-        <div className="grid grid-cols-2 gap-5">
+        <div className="grid grid-cols-2 gap-5 items-center">
           <div className="col-span-2 md:col-span-1">
             <div className="flex flex-col gap-1">
               <label>Name</label>
@@ -140,7 +140,6 @@ export default function CreateAccountForm() {
             </div>
           </div>
           <div className="col-span-2 md:col-span-1">
-            {" "}
             <div className="flex flex-col gap-1">
               <label>Password</label>
               <Input
@@ -171,25 +170,48 @@ export default function CreateAccountForm() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3 md:gap-10 flex-wrap">
-            <p>User Type</p>
+          <div className="col-span-2 md:col-span-1">
+            <div className="flex items-center gap-3 md:gap-10 flex-wrap">
+              <p>User Type</p>
 
-            <div className="flex items-center gap-3 flex-wrap">
-              <RadioButton
-                checked={formik.values.type === "User"}
-                id="User"
-                name="User"
-                onChange={() => formik.setFieldValue("type", "User")}
-                label={<p>User</p>}
-              />
+              <div className="flex items-center gap-3 flex-wrap">
+                {Object.values(AccountTypes).map((k) => (
+                  <RadioButton
+                    key={`type-${k}`}
+                    checked={formik.values.type === k}
+                    id={k}
+                    name={k}
+                    onChange={() => formik.setFieldValue("type", k)}
+                    label={<p>{k}</p>}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
 
-              <RadioButton
-                checked={formik.values.type === "Admin"}
-                id="Admin"
-                name="Admin"
-                onChange={() => formik.setFieldValue("type", "Admin")}
-                label={<p>Admin</p>}
-              />
+          <div className="col-span-2 md:col-span-1">
+            <div className="flex items-center gap-3 md:gap-10 flex-wrap">
+              <p>Roles</p>
+              <div className="flex items-center gap-3 flex-wrap">
+                <Select
+                  multiselect
+                  name="role"
+                  options={[
+                    {
+                      label: "Role 1",
+                      value: "1",
+                    },
+                    {
+                      label: "Role 2",
+                      value: "2",
+                    },
+                  ]}
+                  setValues={(newValues) =>
+                    formik.setFieldValue("roleIds", newValues)
+                  }
+                  values={formik.values.roleIds}
+                />
+              </div>
             </div>
           </div>
         </div>

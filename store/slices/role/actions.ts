@@ -1,5 +1,6 @@
 import { APIsConfig } from "@/config";
 import { AccountTypes } from "@/dto/account";
+import { PermissionKeys } from "@/dto/permission";
 import { IRoleArrayDataResponse, IRoleFull } from "@/dto/role";
 
 import axiosInstance from "@/utils/axios";
@@ -38,7 +39,7 @@ class RoleAction {
   createNewRole(
     name: string,
     description: string,
-    permissionKeys: string[], // TODO
+    permissionKeys: PermissionKeys[],
     type: AccountTypes
   ) {
     return axiosInstance
@@ -55,16 +56,20 @@ class RoleAction {
     id: string,
     name: string,
     description: string,
-    permissionKeys: string[], // TODO
-    type: AccountTypes
+    permissionKeys: PermissionKeys[]
   ) {
     return axiosInstance
       .put(APIsConfig.APIs.Role.update(id), {
         name,
         description,
         permissionKeys,
-        type,
       })
+      .then((response) => response as unknown as IRoleFull);
+  }
+
+  deleteRole(id: string) {
+    return axiosInstance
+      .delete(APIsConfig.APIs.Role.delete(id))
       .then((response) => response as unknown as IRoleFull);
   }
 }

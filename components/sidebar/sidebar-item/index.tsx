@@ -23,7 +23,7 @@ export default function SidebarItem({ label, icon, link }: Props) {
     <Link
       href={link}
       className={clsx(
-        "px-2 py-1 flex items-center justify-start gap-5 hover:bg-white hover:bg-opacity-50 transition-all duration-300 ease-in-out rounded-xl hover:shadow-lg group",
+        "px-2 py-1 flex items-center justify-start gap-5 hover:bg-white hover:bg-opacity-50 custom-animation rounded-xl hover:shadow-lg group",
         sidebar.mode === "full" ? "w-full" : "w-min",
         isSelected && sidebar.mode === "full"
           ? " bg-white shadow-lg"

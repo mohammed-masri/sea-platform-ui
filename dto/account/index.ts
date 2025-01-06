@@ -1,4 +1,5 @@
 import { IArrayDataResponse } from "../global";
+import { IRoleShort } from "../role";
 
 export enum AccountTypes {
   User = "User",
@@ -13,6 +14,7 @@ export interface IAccount {
   birthDate: string;
   isLocked: boolean;
   type: AccountTypes;
+  roles: IRoleShort[];
 }
 
 export interface IAccountArrayDataResponse
