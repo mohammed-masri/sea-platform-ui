@@ -347,55 +347,44 @@ export default function AccountsTable({ isDeleted = false }: Props) {
         />
       </Paper>
 
-      {selectedRow && viewDrawerOpen && (
-        <Drawer
-          isOpen={viewDrawerOpen}
-          onClose={() => setViewDrawerOpen(false)}
-        >
-          <div className="flex flex-col gap-5">
-            <h3 className="font-semibold text-black text-2xl">
-              Account Details
-            </h3>
+      <Drawer isOpen={viewDrawerOpen} onClose={() => setViewDrawerOpen(false)}>
+        <div className="flex flex-col gap-5">
+          <h3 className="font-semibold text-black text-2xl">Account Details</h3>
 
-            <div className="flex flex-col gap-3">
-              <div className="flex gap-3 items-center">
-                <p className="text-xl text-secondary">{selectedRow?.name}</p>
-                <AccountTypeBadge
-                  type={selectedRow?.type || AccountTypes.User}
-                />
+          <div className="flex flex-col gap-3">
+            <div className="flex gap-3 items-center">
+              <p className="text-xl text-secondary">{selectedRow?.name}</p>
+              <AccountTypeBadge type={selectedRow?.type || AccountTypes.User} />
 
-                <Icon
-                  icon={
-                    selectedRow?.isLocked ? "si:lock-fill" : "si:unlock-fill"
-                  }
-                  className={clsx(
-                    "w-5 h-6",
-                    selectedRow?.isLocked ? "text-warning" : "text-success"
-                  )}
-                />
-              </div>
+              <Icon
+                icon={selectedRow?.isLocked ? "si:lock-fill" : "si:unlock-fill"}
+                className={clsx(
+                  "w-5 h-6",
+                  selectedRow?.isLocked ? "text-warning" : "text-success"
+                )}
+              />
+            </div>
 
-              <div className="flex gap-1 items-center">
-                <p className="text-black">Email:</p>
-                <p className="text-text">{selectedRow?.email}</p>
-              </div>
+            <div className="flex gap-1 items-center">
+              <p className="text-black">Email:</p>
+              <p className="text-text">{selectedRow?.email}</p>
+            </div>
 
-              <div className="flex gap-1 items-center">
-                <p className="text-black">Phone Number:</p>
-                <p className="text-text">{selectedRow?.phoneNumber}</p>
-              </div>
-              <div className="flex flex-col gap-1">
-                <p className="text-black">Roles:</p>
-                <div className="flex gap-2 items-center">
-                  {selectedRow?.roles.map((r) => (
-                    <AccountRoleBadge key={`role-${r.id}`} role={r} />
-                  ))}
-                </div>
+            <div className="flex gap-1 items-center">
+              <p className="text-black">Phone Number:</p>
+              <p className="text-text">{selectedRow?.phoneNumber}</p>
+            </div>
+            <div className="flex flex-col gap-1">
+              <p className="text-black">Roles:</p>
+              <div className="flex gap-2 items-center">
+                {selectedRow?.roles.map((r) => (
+                  <AccountRoleBadge key={`role-${r.id}`} role={r} />
+                ))}
               </div>
             </div>
           </div>
-        </Drawer>
-      )}
+        </div>
+      </Drawer>
 
       {selectedRow && restoreModelOpen && (
         <Modal
