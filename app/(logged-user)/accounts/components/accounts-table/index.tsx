@@ -102,6 +102,7 @@ const ActionMenu = ({
                 setSelectedRow(row);
                 setDeleteModelOpen(true);
               }}
+              disabled={isDeleted}
             >
               <div className="flex items-center gap-1">
                 <Icon icon="material-symbols:delete" className="w-5 h-5" />
