@@ -26,11 +26,19 @@ class AccountAction {
     limit: number = 10,
     query: string = "",
     type: AccountTypes | "all" = "all",
-    roleId: string | "all"
+    roleId: string | "all",
+    isDeleted = false
   ) {
     return axiosInstance
       .get(
-        APIsConfig.APIs.Account.getAccounts(page, limit, query, type, roleId)
+        APIsConfig.APIs.Account.getAccounts(
+          page,
+          limit,
+          query,
+          type,
+          roleId,
+          isDeleted
+        )
       )
       .then((response) => response as unknown as IAccountArrayDataResponse);
   }
@@ -93,6 +101,18 @@ class AccountAction {
   toggleLock(id: string) {
     return axiosInstance
       .put(APIsConfig.APIs.Account.toggleLock(id))
+      .then((response) => response as unknown as IAccount);
+  }
+
+  restore(id: string) {
+    return axiosInstance
+      .put(APIsConfig.APIs.Account.restore(id))
+      .then((response) => response as unknown as IAccount);
+  }
+
+  softDelete(id: string) {
+    return axiosInstance
+      .delete(APIsConfig.APIs.Account.softDelete(id))
       .then((response) => response as unknown as IAccount);
   }
 }

@@ -50,6 +50,27 @@ const slice = createSlice({
 
       state.data[page] = accounts;
     },
+    removeAccount: (
+      state,
+      action: PayloadAction<{
+        id: string;
+        page?: number | undefined;
+      }>
+    ) => {
+      const { id, page } = action.payload;
+
+      if (!state.data) return;
+
+      if (page !== undefined) {
+        state.data[page] = state.data[page]?.filter((r) => r.id !== id) || [];
+      } else {
+        Object.keys(state.data).forEach((key) => {
+          const pageKey = Number(key);
+          state.data[pageKey] =
+            state.data[pageKey]?.filter((r) => r.id !== id) || [];
+        });
+      }
+    },
     setPage: (state, action: PayloadAction<number>) => {
       state.page = action.payload;
     },

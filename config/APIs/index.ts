@@ -15,11 +15,14 @@ export const APIs = {
       limit: number = 10,
       query: string = "",
       type: AccountTypes | "all" = "all",
-      roleId: string | "all"
+      roleId: string | "all",
+      isDeleted = false
     ) =>
-      `/accounts?page=${page}&limit=${limit}&q=${query}&type=${type}&roleId=${roleId}`,
+      `/accounts?page=${page}&limit=${limit}&q=${query}&type=${type}&roleId=${roleId}&isDeleted=${isDeleted}`,
     changePassword: (id: string) => `/accounts/${id}/change-password`,
     toggleLock: (id: string) => `/accounts/${id}/toggle-lok`,
+    restore: (id: string) => `/accounts/${id}/restore`,
+    softDelete: (id: string) => `/accounts/${id}/soft-delete`,
   },
   Role: {
     create: "/roles",
