@@ -25,10 +25,13 @@ class AccountAction {
     page: number = 1,
     limit: number = 10,
     query: string = "",
-    type: AccountTypes | "all" = "all"
+    type: AccountTypes | "all" = "all",
+    roleId: string | "all"
   ) {
     return axiosInstance
-      .get(APIsConfig.APIs.Account.getAccounts(page, limit, query, type))
+      .get(
+        APIsConfig.APIs.Account.getAccounts(page, limit, query, type, roleId)
+      )
       .then((response) => response as unknown as IAccountArrayDataResponse);
   }
 

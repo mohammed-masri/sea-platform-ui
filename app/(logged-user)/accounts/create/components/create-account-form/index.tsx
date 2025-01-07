@@ -2,15 +2,14 @@
 import { Button, Input, RadioButton, Select } from "sea-react-components";
 import { FormValidationUtils } from "@/utils";
 import { FormikHelpers, useFormik } from "formik";
-import React, { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import React from "react";
+import { useAppDispatch } from "@/store/hooks";
 import { pushNewAlert } from "@/store/slices/alert/slice";
 import { useRouter } from "next/navigation";
 import AccountActionInstance from "@/store/slices/account/actions";
 import { AccountSliceActions } from "@/store/slices/account/slice";
 import { AccountTypes } from "@/dto/account";
-import RoleActionInstance from "@/store/slices/role/actions";
-import { RoleSliceActions, selectAllRoles } from "@/store/slices/role/slice";
+import useRoles from "@/hooks/useRoles";
 
 type Values = {
   name: string;
@@ -80,34 +79,7 @@ export default function CreateAccountForm() {
     onSubmit,
   });
 
-  const roles = useAppSelector(selectAllRoles);
-
-  const { setTotalCount, setTotalPages, setRolesData } = RoleSliceActions;
-
-  useEffect(() => {
-    RoleActionInstance.getRoles(
-      1,
-      1000, // TODO: fix hardcoded limit
-      "",
-      formik.values.type
-    ).then((response) => {
-      const { data, page: p, totalCount: tc, totalPages: tp } = response;
-      dispatch(setTotalCount(tc));
-      dispatch(setTotalPages(tp));
-      dispatch(
-        setRolesData({
-          roles: data,
-          page: p,
-        })
-      );
-    });
-  }, [
-    dispatch,
-    setTotalCount,
-    setTotalPages,
-    setRolesData,
-    formik.values.type,
-  ]);
+  const roles = useRoles(formik.values.type, 1, 1000); // TODO: fix hardcoded values
 
   return (
     <form onSubmit={formik.handleSubmit}>

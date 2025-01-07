@@ -14,8 +14,10 @@ export const APIs = {
       page: number = 1,
       limit: number = 10,
       query: string = "",
-      type: AccountTypes | "all" = "all"
-    ) => `/accounts?page=${page}&limit=${limit}&q=${query}&type=${type}`,
+      type: AccountTypes | "all" = "all",
+      roleId: string | "all"
+    ) =>
+      `/accounts?page=${page}&limit=${limit}&q=${query}&type=${type}&roleId=${roleId}`,
     changePassword: (id: string) => `/accounts/${id}/change-password`,
     toggleLock: (id: string) => `/accounts/${id}/toggle-lok`,
   },

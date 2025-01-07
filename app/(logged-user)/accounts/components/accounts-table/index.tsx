@@ -4,6 +4,7 @@ import AccountRoleBadge from "@/components/account-role-badge";
 import AccountTypeBadge from "@/components/account-type-badge";
 import { AccountTypes, IAccount } from "@/dto/account";
 import { useGetQueryParam } from "@/hooks/useGetQueryParam";
+import useRoles from "@/hooks/useRoles";
 import { useUpdateQueryParams } from "@/hooks/useUpdateQueryParams";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import AccountActionInstance from "@/store/slices/account/actions";
@@ -76,6 +77,8 @@ export default function AccountsTable() {
     undefined
   );
 
+  const [roleId, setRoleId] = useState<string | "all">("all");
+
   const columns: TableColumn<IAccount>[] = [
     {
       key: "name",
@@ -138,7 +141,7 @@ export default function AccountsTable() {
   const getParam = useGetQueryParam();
 
   useEffect(() => {
-    AccountActionInstance.getAccounts(page, limit, query, type).then(
+    AccountActionInstance.getAccounts(page, limit, query, type, roleId).then(
       (response) => {
         const { data, page: p, totalCount: tc, totalPages: tp } = response;
         dispatch(setTotalCount(tc));
@@ -160,7 +163,10 @@ export default function AccountsTable() {
     setTotalPages,
     setAccountsData,
     type,
+    roleId,
   ]);
+
+  const roles = useRoles(type, 1, 1000); // TODO: fix hardcoded values
 
   return (
     <>
@@ -186,7 +192,18 @@ export default function AccountsTable() {
                 value,
               })),
               value: type,
-              setValue: (newValue) => dispatch(setType(newValue)),
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              setValue: (newValue) => dispatch(setType(newValue as any)),
+            },
+            {
+              label: "Role",
+              name: "role",
+              options: roles.map((r) => ({
+                label: r.name,
+                value: r.id,
+              })),
+              value: roleId,
+              setValue: (newValue) => setRoleId(newValue),
             },
           ]}
           updateParams={updateParams}
