@@ -97,7 +97,17 @@ export default function RolesTable() {
     {
       key: "name",
       label: "Name",
-      custom: (row) => <p style={{ color: row.color }}>{row.name}</p>,
+    },
+    {
+      key: "color",
+      label: "Color",
+      custom: (row) => (
+        <div
+          style={{ backgroundColor: row.color }}
+          className="w-8 h-8 rounded-full"
+        ></div>
+      ),
+      className: "text-center",
     },
     {
       key: "type",
