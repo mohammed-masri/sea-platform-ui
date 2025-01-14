@@ -48,6 +48,14 @@ export default function Sidebar() {
         <div className="flex flex-col gap-2">
           <SidebarItem label="Roles" icon="carbon:user-role" link="/roles" />
         </div>
+
+        <div className="flex flex-col gap-2">
+          <SidebarItem
+            label="Applications"
+            icon="duo-icons:app"
+            link="/applications"
+          />
+        </div>
       </div>
 
       <Image

@@ -18,6 +18,11 @@ export enum PermissionKeys {
   ManageRolesCreate = "manage-roles-create",
   ManageRolesUpdateDetails = "manage-roles-update-details",
   ManageRolesDelete = "manage-roles-delete",
+  ManageApplication = "manage-applications",
+  ManageApplicationRead = "manage-applications-read",
+  ManageApplicationCreate = "manage-applications-create",
+  ManageApplicationUpdateDetails = "manage-applications-update-details",
+  ManageApplicationDelete = "manage-applications-delete",
 
   // User
   ContractsApp = "contracts-app",

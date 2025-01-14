@@ -1,4 +1,5 @@
 import { AccountTypes } from "@/dto/account";
+import { ApplicationStatuses } from "@/dto/application";
 
 export const APIs = {
   Microsoft: {
@@ -35,6 +36,23 @@ export const APIs = {
       type: AccountTypes | "all" = "all"
     ) => `/roles?page=${page}&limit=${limit}&q=${query}&accountType=${type}`,
     delete: (id: string) => `/roles/${id}`,
+  },
+  Application: {
+    create: "/applications",
+    update: (id: string) => `/applications/${id}`,
+    getApplicationDetails: (id: string) => `/applications/${id}`,
+    getApplications: (
+      page: number = 1,
+      limit: number = 10,
+      query: string = "",
+      status: ApplicationStatuses | "all" = "all"
+    ) =>
+      `/applications?page=${page}&limit=${limit}&q=${query}&status=${status}`,
+    delete: (id: string) => `/applications/${id}`,
+  },
+  File: {
+    upload: "/file-manager/upload",
+    delete: (id: string) => `/file-manager/${id}`,
   },
   StaticData: {
     permissions: `/static/permissions`,
