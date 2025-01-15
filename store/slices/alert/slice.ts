@@ -1,6 +1,6 @@
 import { RootState } from "@/store/store";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AlertTypes, AlertThemes } from "sea-react-components";
+import { AlertTypes, AlertThemes, ArrayUtils } from "sea-react-components";
 
 type Alert = { message: string; type: AlertTypes; theme: AlertThemes };
 
@@ -18,7 +18,12 @@ const slice = createSlice({
   reducers: {
     pushNewAlert: (state, action: PayloadAction<Alert>) => {
       const newAlert = action.payload;
-      state.alerts = [newAlert, ...state.alerts];
+      state.alerts = ArrayUtils.concatWithoutDuplicates(
+        state.alerts,
+        [newAlert],
+        (a, b) => JSON.stringify(a) === JSON.stringify(b)
+      );
+      // state.alerts = [newAlert, ...state.alerts];
     },
     removeAlert: (state, action: PayloadAction<number>) => {
       const index = action.payload;
