@@ -143,6 +143,7 @@ export default function CreateRoleForm() {
               <ColorPicker
                 id="color"
                 name="color"
+                showDisplay
                 color={formik.values.color}
                 setColor={(newColor) => formik.setFieldValue("color", newColor)}
               />
