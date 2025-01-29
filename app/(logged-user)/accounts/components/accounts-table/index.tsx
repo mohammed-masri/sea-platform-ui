@@ -27,6 +27,8 @@ import {
   Drawer,
   Modal,
   Button,
+  Tooltip,
+  MomentUtils,
 } from "sea-react-components";
 
 type ActionMenuProps = {
@@ -152,7 +154,17 @@ export default function AccountsTable({ isDeleted = false }: Props) {
     {
       key: "birthDate",
       label: "Birthdate",
-      // custom: (row)=>
+      custom: (row) => (
+        <div>
+          <Tooltip
+            placement="top"
+            text={MomentUtils.getAge(row.birthDate) + " Years"}
+            containerClassName="w-24 text-center bg-info"
+          >
+            <p>{row.birthDate}</p>
+          </Tooltip>
+        </div>
+      ),
     },
     {
       key: "type",

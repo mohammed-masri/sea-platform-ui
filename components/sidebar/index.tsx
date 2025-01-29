@@ -16,7 +16,7 @@ export default function Sidebar() {
         sidebar.mode === "full" ? "px-5" : "px-1"
       )}
     >
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-2">
         <Link href="/dashboard" className="flex items-center gap-3 pl-1">
           <Image
             src="/images/sea-logo.png"
